@@ -5,6 +5,7 @@ class SDmodule
   public:
     SDmodule();
     void ReportCard();
+    void TestWrite();
 
   private:
     const int csPin = 10; // comunicatin pin for uno  

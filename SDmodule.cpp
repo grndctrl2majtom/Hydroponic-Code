@@ -83,3 +83,57 @@ void SDmodule::ReportCard()
   // list all files in the card with date and size
   root.ls(LS_R | LS_DATE | LS_SIZE);
 }
+
+void SDmodule::TestWrite()
+{
+
+  if (!SD.begin(csPin)) 
+  {
+    Serial.println("Card failed, or not present");
+    // don't do anything more:
+    while (1);
+  }
+  Serial.println("card initialized.");
+
+  String testMessage = "Hello! The file parse worked!";
+
+  if (SD.exists("TestFile.txt"))
+  {
+    Serial.println("Deleting file");
+    SD.remove("TestFile.txt");
+  }
+
+  File dataFile = SD.open("TestFile.txt", FILE_WRITE);
+
+  // if the file is available, write to it:
+  if(dataFile)
+  {
+    dataFile.println(testMessage);
+    dataFile.close();
+    Serial.println("print should've worked, the following was read from file:");
+  }
+  else
+  {
+    Serial.println("error opening file");
+  }
+
+  File myFile = SD.open("TestFile.txt");
+  if (myFile) 
+  {
+    Serial.println("test.txt:");
+
+    // read from the file until there's nothing else in it:
+    while (myFile.available()) 
+    {
+      Serial.write(myFile.read());
+    }
+    // close the file:
+    myFile.close();
+  } 
+  else 
+  {
+    // if the file didn't open, print an error:
+    Serial.println("error opening test.txt");
+  }
+
+}

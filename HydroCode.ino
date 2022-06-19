@@ -2,13 +2,14 @@
   
 #include "SDmodule.hpp"
 
-SDmodule SD;
+SDmodule SDmod;
 
 void setup()
 {
 
   Serial.begin(9600);
-  SD.ReportCard();
+  //SDmod.ReportCard();
+  SDmod.TestWrite();
 }
 
 void loop()
