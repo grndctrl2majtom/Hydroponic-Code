@@ -1,12 +1,16 @@
-// Main driver for hydroponic system
+// Main Driver Script for Hydroponic System
+  
+#include "SDmodule.hpp"
 
-void setup() {
-  // put your setup code here, to run once:
+SDmodule SD;
+
+void setup()
+{
+
   Serial.begin(9600);
-  Serial.println("Hello World!");
+  SD.ReportCard();
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-  Serial.println("loop test");
+void loop()
+{
 }
