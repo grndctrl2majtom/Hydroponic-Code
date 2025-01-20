@@ -8,6 +8,6 @@ class SDmodule
     void TestWrite();
 
   private:
-    const int csPin = 10; // comunicatin pin for uno  
+    const int csPin = 53; // comunicatin pin for uno  
 
 };

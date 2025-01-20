@@ -9,7 +9,7 @@ void setup()
 
   Serial.begin(9600);
   //SDmod.ReportCard();
-  SDmod.TestWrite();
+  //SDmod.TestWrite();
 }
 
 void loop()
