@@ -1,7 +1,9 @@
 // Main Driver Script for Hydroponic System
   
+#include "Clock.hpp"
 #include "SDmodule.hpp"
 
+Clock clock;
 SDmodule SDmod;
 
 void setup()
@@ -14,4 +16,9 @@ void setup()
 
 void loop()
 {
+  //clock.refreshClock();
+  //Serial.println("here");
+  //Serial.println(clock.getSecond());
+
+  //delay(100);
 }
