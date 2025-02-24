@@ -1,21 +1,29 @@
 // Clock class contains functions relative to the time keeping for the hydroponic system
-
-#include "uRTCLib.h"
+#include "Arduino.h"
 
 class Clock
 {
   public:
     Clock();
 
-    int getSecond() {return second;}
-    int getMinute() {return minute;}
-    int getHour() {return hour;}
-    int getDay() {return day;}
-    int getMonth() {return month;}
-    int getYear() {return year;}
-    int getClockTemperature() {return clockTemperature;}
+    struct ClockData
+    {
+      int second;
+      int minute;
+      int hour;
+      int day;
+      int month;
+      int year;
+      int clockTemp;
+    };
 
+    ClockData getClockData() {return clockData;}
+
+    void initializeClock();
     void refreshClock();
+
+    // Tests
+    void dataReadTest();
 
   private:
 
@@ -27,4 +35,5 @@ class Clock
     int year;
     int clockTemperature;
 
+    ClockData clockData;
 };

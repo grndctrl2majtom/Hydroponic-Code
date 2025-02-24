@@ -10,7 +10,13 @@
 
 SDmodule::SDmodule()
 {
-  
+  if (!SD.begin(csPin)) 
+  {
+    Serial.println("Card failed, or not present");
+    // don't do anything more:
+    while (1);
+  }
+  Serial.println("card initialized.");
 }
 
 void SDmodule::ReportCard()
@@ -84,6 +90,32 @@ void SDmodule::ReportCard()
   root.ls(LS_R | LS_DATE | LS_SIZE);
 }
 
+void SDmodule::setDate(int day,  int month, int year)
+{
+  fileDay = day;
+  fileMonth = month;
+  fileYear = year;
+}
+
+
+void SDmodule::recordData()
+{
+  createFile();
+}
+
+void SDmodule::createFile()
+{
+  String day = String(fileDay);
+  String month = String(fileMonth);
+  String year = String(fileYear);
+
+  String fileBase = "HydroponicData";
+
+  String fullfile = fileBase + "_" + day + "_" + month + "_" + year + ".csv";
+
+  File dataFile = SD.open(fullfile, FILE_WRITE);
+}
+
 void SDmodule::TestWrite()
 {
 
@@ -137,3 +169,4 @@ void SDmodule::TestWrite()
   }
 
 }
+
