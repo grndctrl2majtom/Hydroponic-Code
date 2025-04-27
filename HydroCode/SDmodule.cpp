@@ -2,6 +2,8 @@
 
 #include <SPI.h>
 
+  Clock clock;
+
 // set up variables using the SD utility library functions:
   Sd2Card card;
   SdVolume volume;
@@ -9,6 +11,121 @@
 
 SDmodule::SDmodule()
 {
+}
+
+void SDmodule::recordData(String dataString)
+{
+  checkForCard();
+  //clock.dataReadTest();
+  clock.initializeClock();
+  clock.refreshClock();
+  //clock.dataReadTest();
+  clockDat = clock.getClockData();
+  
+  createFiles();
+  writeLine(dataString);
+
+  //TestWrite();
+  //while(1);
+}
+
+void SDmodule::checkForCard()
+{
+  if (!SD.begin(csPin)) 
+  {
+    Serial.println("Card failed, or not present: Insert card to continue logging");
+    // don't do anything until card inserted:
+    while (!SD.begin(csPin));
+    delay(50);
+    Serial.println("card initialized.");
+  }
+}
+
+void SDmodule::createFiles()
+{
+  String day = String(clockDat.day);
+  String month = String(clockDat.month);
+  String year = String(clockDat.year);
+
+  if(clockDat.day < 10)
+  {
+    day = "0" + day;
+  }
+  if(clockDat.month)
+  {
+    month = "0" + month;
+  }
+
+  //String fileBase = "Data.csv";
+
+  String folderBase = year + month + day;
+  String dataFilename = "LogDat.csv";
+  String fileDir = "/" + folderBase + "/" + dataFilename;
+  //File dataFile = SD.open(fullFile, FILE_WRITE);
+  //dataFile = SD.open(fileBase, FILE_WRITE); // file
+
+  if(!SD.exists(folderBase))
+  {
+    Serial.print("Folder does not exist, reating Folder ");
+    Serial.println(folderBase);
+    SD.mkdir(folderBase);
+  }
+
+  if(!SD.exists(fileDir))
+  {
+    Serial.print("File does not exists, creating ");
+    Serial.println(fileDir);
+    Serial.println();
+    String headerline = "Time, TestVar";
+    dataFile = SD.open(fileDir, FILE_WRITE); // file
+    delay(5);
+    
+    dataFile.println(headerline);
+  }
+  else
+  {
+    dataFile = SD.open(fileDir, FILE_WRITE); // file
+    delay(5);
+  }
+  
+  // if the file is available, write to it:
+  if(!dataFile)
+  {
+    Serial.print("error opening file ");
+    Serial.println(fileDir);
+  }
+}
+
+void SDmodule::writeLine(String dataString)
+{
+  String second = String(clockDat.second);
+  String minute = String(clockDat.minute);
+  String hour = String(clockDat.hour);
+
+  if(clockDat.second < 10)
+  {
+    second = "0" + second;
+  }
+  if(clockDat.minute < 10)
+  {
+    minute = "0" + minute;
+  }
+  if(clockDat.hour < 10)
+  {
+    hour = "0" + hour;
+  }
+
+  String timeString = second + ":" + minute + ":" + hour;
+
+  String dataLine = timeString + ", " + dataString;
+
+  dataFile.println(dataLine);
+  dataFile.close();
+}
+
+void SDmodule::TestWrite()
+{
+
   if (!SD.begin(csPin)) 
   {
     Serial.println("Card failed, or not present");
@@ -16,6 +133,48 @@ SDmodule::SDmodule()
     while (1);
   }
   Serial.println("card initialized.");
+
+  String testMessage = "Hello! The file parse worked!";
+
+  if (SD.exists("TestFile.txt"))
+  {
+    Serial.println("Deleting file");
+    SD.remove("TestFile.txt");
+  }
+
+  dataFile = SD.open("TestFile.txt", FILE_WRITE);
+
+  // if the file is available, write to it:
+  if(dataFile)
+  {
+    dataFile.println(testMessage);
+    dataFile.close();
+    Serial.println("print should've worked, the following was read from file:");
+  }
+  else
+  {
+    Serial.println("error opening file");
+  }
+
+  File myFile = SD.open("TestFile.txt");
+  if (myFile) 
+  {
+    Serial.println("test.txt:");
+
+    // read from the file until there's nothing else in it:
+    while (myFile.available()) 
+    {
+      Serial.write(myFile.read());
+    }
+    // close the file:
+    myFile.close();
+  } 
+  else 
+  {
+    // if the file didn't open, print an error:
+    Serial.println("error opening test.txt");
+  }
+
 }
 
 void SDmodule::ReportCard()
@@ -88,115 +247,3 @@ void SDmodule::ReportCard()
   // list all files in the card with date and size
   root.ls(LS_R | LS_DATE | LS_SIZE);
 }
-
-void SDmodule::setDate(int day,  int month, int year)
-{
-  fileDay = day;
-  fileMonth = month;
-  fileYear = year;
-}
-
-void SDmodule::recordData()
-{
-  createFile();
-  //TestWrite();
-  while(1)
-  {
-
-  }
-}
-
-void SDmodule::createFile()
-{
-  String day = String(fileDay);
-  if(fileDay < 10)
-  {
-    day = "0" + day;
-  }
-  String month = String(fileMonth);
-  if(month)
-  {
-    month = "0" + month;
-  }
-  String year = String(fileYear);
-
-  //String fileBase = "Data.csv";
-
-  String fileBase = year + month + day + ".csv";
-
-  //File dataFile = SD.open(fullFile, FILE_WRITE);
-  //dataFile = SD.open(fileBase, FILE_WRITE); // file
-
-  if (~SD.exists(fileBase))
-  {
-    dataFile = SD.open(fileBase, FILE_WRITE); // file
-    //dataFile.println(headerline);
-  }
-  
-
-  // if the file is available, write to it:
-  if(dataFile)
-  {
-    Serial.println("print should've worked, the following was read from file:");
-  }
-  else
-  {
-    Serial.print("error opening file ");
-    Serial.println(fileBase);
-  }
-}
-
-void SDmodule::TestWrite()
-{
-
-  if (!SD.begin(csPin)) 
-  {
-    Serial.println("Card failed, or not present");
-    // don't do anything more:
-    while (1);
-  }
-  Serial.println("card initialized.");
-
-  String testMessage = "Hello! The file parse worked!";
-
-  if (SD.exists("TestFile.txt"))
-  {
-    Serial.println("Deleting file");
-    SD.remove("TestFile.txt");
-  }
-
-  dataFile = SD.open("TestFile.txt", FILE_WRITE);
-
-  // if the file is available, write to it:
-  if(dataFile)
-  {
-    dataFile.println(testMessage);
-    dataFile.close();
-    Serial.println("print should've worked, the following was read from file:");
-  }
-  else
-  {
-    Serial.println("error opening file");
-  }
-
-  File myFile = SD.open("TestFile.txt");
-  if (myFile) 
-  {
-    Serial.println("test.txt:");
-
-    // read from the file until there's nothing else in it:
-    while (myFile.available()) 
-    {
-      Serial.write(myFile.read());
-    }
-    // close the file:
-    myFile.close();
-  } 
-  else 
-  {
-    // if the file didn't open, print an error:
-    Serial.println("error opening test.txt");
-  }
-
-}
-

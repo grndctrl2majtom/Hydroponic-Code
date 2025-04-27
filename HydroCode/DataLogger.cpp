@@ -1,24 +1,18 @@
 
-#include "Clock.hpp"
+//#include "Clock.hpp"
 #include "DataLogger.hpp"
 #include "SDmodule.hpp"
 
-Clock clock;
+//Clock clock;
 SDmodule SDmod;
 
 DataLogger::DataLogger()
 {
-  clock.initializeClock();
   //SDmod.ReportCard();
 }
 
-void DataLogger::writeData()
+void DataLogger::writeData(String dataString)
 {
-  //clock.dataReadTest();
-  clock.refreshClock();
-  Clock::ClockData clockDat = clock.getClockData();
-  
-  SDmod.setDate(clockDat.day, clockDat.month, clockDat.year);
-  SDmod.recordData();
+  SDmod.recordData(dataString);
 
 }

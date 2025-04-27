@@ -5,7 +5,7 @@ class DataLogger
   public:
     DataLogger();
 
-    void writeData();
+    void writeData(String DataString);
 
   private:
 

@@ -1,5 +1,7 @@
 // SDmodulle class contains functions relative to the SD card logging for the hydroponic system
 
+#include "Clock.hpp"
+
 #include <SD.h>
 
 class SDmodule
@@ -9,8 +11,7 @@ class SDmodule
 
     void ReportCard();
 
-    void setDate(int day, int month, int year);
-    void recordData();
+    void recordData(String dataString);
 
     // Test functions
     void TestWrite();
@@ -18,11 +19,11 @@ class SDmodule
   private:
     const int csPin = 53; // comunicatin pin for uno  
     
-    int fileDay;
-    int fileMonth;
-    int fileYear;
+    Clock::ClockData clockDat;
 
     File dataFile;
 
-    void createFile();
+    void checkForCard();
+    void createFiles();
+    void writeLine(String dataString);
 };

@@ -12,9 +12,9 @@ DataLogger dataLog;
 
 void setup()
 {
-  delay (2000);
   Serial.begin(9600);
   Serial.println("starting");
+  delay (250);
   //clock.initializeClock();
   //SDmod.ReportCard();
   //SDmod.TestWrite();
@@ -22,5 +22,6 @@ void setup()
 
 void loop()
 {
-  dataLog.writeData();
+  dataLog.writeData("test");
+  delay(5000);
 }

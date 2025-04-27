@@ -26,7 +26,9 @@ void Clock::initializeClock()
 		URTCLIB_WIRE.begin();
 	#endif
 
-  // rtc.set(0, 50, 19, 7, 23, 2, 25);
+  //Serial.println("setting time");
+  //rtc.set(0, 58, 15, 1, 27, 4, 25);
+  //while(1);
   // rtc.set(second, minute, hour, dayOfWeek, dayOfMonth, month, year)
   // set day of week (1=Sunday, 7=Saturday
 }
