@@ -1,6 +1,5 @@
 #include "SDmodule.hpp"
 
-#include <SD.h>
 #include <SPI.h>
 
 // set up variables using the SD utility library functions:
@@ -97,23 +96,54 @@ void SDmodule::setDate(int day,  int month, int year)
   fileYear = year;
 }
 
-
 void SDmodule::recordData()
 {
   createFile();
+  //TestWrite();
+  while(1)
+  {
+
+  }
 }
 
 void SDmodule::createFile()
 {
   String day = String(fileDay);
+  if(fileDay < 10)
+  {
+    day = "0" + day;
+  }
   String month = String(fileMonth);
+  if(month)
+  {
+    month = "0" + month;
+  }
   String year = String(fileYear);
 
-  String fileBase = "HydroponicData";
+  //String fileBase = "Data.csv";
 
-  String fullfile = fileBase + "_" + day + "_" + month + "_" + year + ".csv";
+  String fileBase = year + month + day + ".csv";
 
-  File dataFile = SD.open(fullfile, FILE_WRITE);
+  //File dataFile = SD.open(fullFile, FILE_WRITE);
+  //dataFile = SD.open(fileBase, FILE_WRITE); // file
+
+  if (~SD.exists(fileBase))
+  {
+    dataFile = SD.open(fileBase, FILE_WRITE); // file
+    //dataFile.println(headerline);
+  }
+  
+
+  // if the file is available, write to it:
+  if(dataFile)
+  {
+    Serial.println("print should've worked, the following was read from file:");
+  }
+  else
+  {
+    Serial.print("error opening file ");
+    Serial.println(fileBase);
+  }
 }
 
 void SDmodule::TestWrite()
@@ -135,7 +165,7 @@ void SDmodule::TestWrite()
     SD.remove("TestFile.txt");
   }
 
-  File dataFile = SD.open("TestFile.txt", FILE_WRITE);
+  dataFile = SD.open("TestFile.txt", FILE_WRITE);
 
   // if the file is available, write to it:
   if(dataFile)

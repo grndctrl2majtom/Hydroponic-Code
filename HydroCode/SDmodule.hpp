@@ -1,5 +1,7 @@
 // SDmodulle class contains functions relative to the SD card logging for the hydroponic system
 
+#include <SD.h>
+
 class SDmodule
 {
   public:
@@ -19,6 +21,8 @@ class SDmodule
     int fileDay;
     int fileMonth;
     int fileYear;
+
+    File dataFile;
 
     void createFile();
 };

@@ -9,6 +9,7 @@ SDmodule SDmod;
 DataLogger::DataLogger()
 {
   clock.initializeClock();
+  //SDmod.ReportCard();
 }
 
 void DataLogger::writeData()
@@ -18,5 +19,6 @@ void DataLogger::writeData()
   Clock::ClockData clockDat = clock.getClockData();
   
   SDmod.setDate(clockDat.day, clockDat.month, clockDat.year);
+  SDmod.recordData();
 
 }
